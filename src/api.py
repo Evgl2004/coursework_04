@@ -1,6 +1,4 @@
 from abc import ABC, abstractmethod
-
-from src.vacancy import Vacancy
 from src.err import ParsingError
 from os import getenv
 
@@ -8,7 +6,7 @@ import requests
 
 
 class API(ABC):
-    __slots__ = ('__url_vacancies', '__vacancies_list', '__headers', '__params')
+    __slots__ = ('__url_vacancies', '__vacancies_list', '__headers', '__params', '__name_parent_group_json')
 
     @abstractmethod
     def get_vacancies(self):
@@ -18,13 +16,18 @@ class API(ABC):
     def get_requests(self):
         pass
 
+    @abstractmethod
+    def formatted_vacancy(self):
+        pass
+
 
 class JobSearchPortalAPI(API):
-    def __init__(self, url_vacancies: str, headers: dict, params: dict):
+    def __init__(self, url_vacancies: str, headers: dict, params: dict, name_parent_group_json: str):
         self.__url_vacancies = url_vacancies
         self.__headers = headers
         self.__params = params
         self.__vacancies_list = []
+        self.__name_parent_group_json = name_parent_group_json
 
     @property
     def url_vacancies(self):
@@ -42,12 +45,16 @@ class JobSearchPortalAPI(API):
     def vacancies_list(self):
         return self.__vacancies_list
 
+    @property
+    def name_parent_group_json(self):
+        return self.__name_parent_group_json
+
     def get_requests(self):
 
         response = requests.get(self.url_vacancies, headers=self.headers, params=self.params)
 
         if response.status_code == 200:
-            return response.json()["items"]
+            return response.json()[self.name_parent_group_json]
         else:
             raise ParsingError(f"Ошибка получения данных по API. Код ошибки = {response.status_code}")
 
@@ -65,6 +72,9 @@ class JobSearchPortalAPI(API):
             else:
                 self.__vacancies_list.extend(vacancies_page)
 
+    def formatted_vacancy(self):
+        pass
+
 
 class HeadHunterAPI(JobSearchPortalAPI):
     def __init__(self, keyword: str):
@@ -78,9 +88,28 @@ class HeadHunterAPI(JobSearchPortalAPI):
             'per_page': 20,
             'page': 1,
             'text': keyword,
-            'archived': False
+            'only_with_salary': True,
+            'currency': 'RUR'
         }
-        super().__init__(url_vacancies, headers, params)
+        super().__init__(url_vacancies, headers, params, "items")
+
+    def formatted_vacancy(self):
+
+        formatted_vacancy_list = []
+
+        for vacancy in self.vacancies_list:
+            formatted_vacancy_dict = {
+                'api': 'HeadHunter',
+                'id_vacancy': vacancy['id'],
+                'employer': vacancy['employer']['name'] if vacancy["employer"] is not None else "",
+                'title': vacancy['name'],
+                'url': vacancy['alternate_url'],
+                'salary_from': vacancy["salary"]['from'] if vacancy["salary"] is not None else 0
+            }
+
+            formatted_vacancy_list.append(formatted_vacancy_dict)
+
+        return formatted_vacancy_list
 
 
 class SuperJobAPI(JobSearchPortalAPI):
@@ -96,4 +125,22 @@ class SuperJobAPI(JobSearchPortalAPI):
             'keyword': keyword,
             'archived': False
         }
-        super().__init__(url_vacancies, headers, params)
+        super().__init__(url_vacancies, headers, params, "objects")
+
+    def formatted_vacancy(self):
+
+        formatted_vacancy_list = []
+
+        for vacancy in self.vacancies_list:
+            formatted_vacancy_dict = {
+                'api': 'SuperJob',
+                'id_vacancy': vacancy['id'],
+                'employer': vacancy['firm_name'],
+                'title': vacancy['profession'],
+                'url': vacancy['link'],
+                'salary_from': vacancy['payment_from']
+            }
+
+            formatted_vacancy_list.append(formatted_vacancy_dict)
+
+        return formatted_vacancy_list

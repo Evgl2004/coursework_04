@@ -12,11 +12,11 @@ class Vacancy:
         return self.__name
 
     @property
-    def url (self):
+    def url(self):
         return self.__url
 
     @property
-    def description (self):
+    def description(self):
         return self.__description
 
     @property
@@ -43,4 +43,3 @@ class Vacancy:
 
     def __eq__(self, other):
         return self.salary == other.salary
-
