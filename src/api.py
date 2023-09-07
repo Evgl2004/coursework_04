@@ -85,7 +85,7 @@ class HeadHunterAPI(JobSearchPortalAPI):
         }
 
         params = {
-            'per_page': 20,
+            'per_page': 2,
             'page': 1,
             'text': keyword,
             'only_with_salary': True,
@@ -104,7 +104,10 @@ class HeadHunterAPI(JobSearchPortalAPI):
                 'employer': vacancy['employer']['name'] if vacancy["employer"] is not None else "",
                 'title': vacancy['name'],
                 'url': vacancy['alternate_url'],
-                'salary_from': vacancy["salary"]['from'] if vacancy["salary"] is not None else 0
+                'salary_from': vacancy["salary"]['from'] if vacancy["salary"] is not None
+                                                            and vacancy["salary"]['from'] is not None else 0,
+                'salary_to': vacancy["salary"]['to'] if vacancy["salary"] is not None
+                                                        and vacancy["salary"]['to'] is not None else 0
             }
 
             formatted_vacancy_list.append(formatted_vacancy_dict)
@@ -120,7 +123,7 @@ class SuperJobAPI(JobSearchPortalAPI):
         }
 
         params = {
-            'count': 20,
+            'count': 2,
             'page': 1,
             'keyword': keyword,
             'archived': False
@@ -138,7 +141,8 @@ class SuperJobAPI(JobSearchPortalAPI):
                 'employer': vacancy['firm_name'],
                 'title': vacancy['profession'],
                 'url': vacancy['link'],
-                'salary_from': vacancy['payment_from']
+                'salary_from': vacancy['payment_from'],
+                'salary_to': vacancy['payment_to']
             }
 
             formatted_vacancy_list.append(formatted_vacancy_dict)
