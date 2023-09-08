@@ -38,23 +38,53 @@ class Vacancy:
     def salary_to(self):
         return self.__salary_to
 
+    def return_dict(self):
+        return {
+            'api': self.__api,
+            'id_vacancy': self.__id_vacancy,
+            'employer': self.__employer,
+            'title': self.__title,
+            'url': self.__url,
+            'salary_from': self.__salary_from,
+            'salary_to': self.__salary_to
+        }
+
     def __str__(self):
-        return f'{self.title}'
+        return (f'ID = {self.id_vacancy}\n'
+                f'Вакансия = {self.title}\n'
+                f'Работодатель = {self.employer}\n'
+                f'Зарплата = {self.salary_from}\n'
+                f'Ссылка = {self.url}\n')
 
     def __repr__(self):
         return f"{self.__class__.__name__}('{self.title}', '{self.url}', {self.salary_from})"
 
-    # def __gt__(self, other):
-    #     return self.salary > other.salary
-    #
-    # def __ge__(self, other):
-    #     return self.salary >= other.salary
-    #
-    # def __lt__(self, other):
-    #     return self.salary < other.salary
-    #
-    # def __le__(self, other):
-    #     return self.salary <= other.salary
-    #
-    # def __eq__(self, other):
-    #     return self.salary == other.salary
+    def __gt__(self, other):
+        if isinstance(other, self.__class__):
+            return self.salary_from > other.salary_from
+        else:
+            return self.salary_from > other
+
+    def __ge__(self, other):
+        if isinstance(other, self.__class__):
+            return self.salary_from >= other.salary_from
+        else:
+            return self.salary_from >= other
+
+    def __lt__(self, other):
+        if isinstance(other, self.__class__):
+            return self.salary_from < other.salary_from
+        else:
+            return self.salary_from < other
+
+    def __le__(self, other):
+        if isinstance(other, self.__class__):
+            return self.salary_from <= other.salary_from
+        else:
+            return self.salary_from <= other
+
+    def __eq__(self, other):
+        if isinstance(other, self.__class__):
+            return self.salary_from == other.salary_from
+        else:
+            return self.salary_from == other

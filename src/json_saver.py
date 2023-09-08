@@ -2,6 +2,7 @@ import json
 from abc import ABC, abstractmethod
 from src.vacancy import Vacancy
 
+
 class FileSaver(ABC):
     __slots__ = '__filename'
 
@@ -13,9 +14,8 @@ class FileSaver(ABC):
     def read_vacancy(self):
         pass
 
-
     @abstractmethod
-    def del_vacancy(self):
+    def del_vacancy(self, id_vacancy):
         pass
 
 
@@ -37,5 +37,13 @@ class JSONSaver(FileSaver):
 
         return [Vacancy(data_dict) for data_dict in vacancy_json]
 
-    def del_vacancy(self):
-        pass
+    def del_vacancy(self, id_vacancy):
+        with open(self.filename, "r", encoding='utf-8') as file:
+            vacancy_json = json.load(file)
+
+            for item in vacancy_json:
+                if item['id_vacancy'] == id_vacancy:
+                    vacancy_json.remove(item)
+                    break
+
+            self.write_vacancy(vacancy_json)
