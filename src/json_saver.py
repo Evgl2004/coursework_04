@@ -66,7 +66,7 @@ class JSONSaver(FileSaver):
     def __repr__(self):
         return f"{self.__class__.__name__}('{self.__filename}')"
 
-    def write_vacancy(self, vacancy_json):
+    def write_vacancy(self, vacancy_json: list):
         """
         Записать полученный список всех вакансий в файл.
         :param vacancy_json: Список вакансий в формате JSON.
@@ -85,7 +85,7 @@ class JSONSaver(FileSaver):
 
         return [Vacancy(data_dict) for data_dict in vacancy_json]
 
-    def del_vacancy(self, id_vacancy):
+    def del_vacancy(self, id_vacancy: int):
         """
         Удаляет найденную вакансию в файле по номеру идентификатора.
         :param id_vacancy: Идентификатор вакансии, которую нужно удалить.

@@ -91,7 +91,7 @@ class JobSearchPortalAPI(API):
         return f'url_vacancies = {self.__url_vacancies}'
 
     def __repr__(self):
-        return (f"{self.__class__.__name__}('{self.__url_vacancies}', '{self.__headers}', '{self.__params}', "
+        return (f"{self.__class__.__name__}('{self.__url_vacancies}', '{self.__params}', "
                 f"'{self.__vacancies_list}', '{self.__name_parent_group_json}')")
 
     def get_requests(self):
