@@ -14,6 +14,7 @@ def call_test_vacancy():
         "salary_to": 0
     })
 
+
 @pytest.fixture
 def call_test_vacancy_any():
     return Vacancy({
@@ -25,6 +26,7 @@ def call_test_vacancy_any():
         "salary_from": 55000,
         "salary_to": 0
     })
+
 
 def test_vacancy_init(call_test_vacancy):
     assert call_test_vacancy.api == "SuperJob"

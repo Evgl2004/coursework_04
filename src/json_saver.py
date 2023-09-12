@@ -100,3 +100,24 @@ class JSONSaver(FileSaver):
                     break
 
             return vacancy_json
+
+    def filter_vacancy(self, input_keyword_filter: list):
+        """
+        Поиск вакансий по указанному списку ключевых слов.
+        :param input_keyword_filter: Список ключевых слов для поиска.
+        :return: Возвращает найденные вакансии в формате JSON.
+        """
+        vacancy_json_after_filter = []
+
+        with open(self.filename, "r", encoding='utf-8') as file:
+            vacancy_json = json.load(file)
+
+            for keyword in input_keyword_filter:
+                for item in vacancy_json:
+                    if keyword in item['employer'].lower() or keyword in item['title'].lower():
+                        vacancy_json_after_filter.append(item)
+                        # чтобы не добавить одинаковых вакансий, при прохождении списка вакансий
+                        # по нескольким ключевым словам, удаляем найденную вакансию из списка прохождения.
+                        vacancy_json.remove(item)
+
+        return vacancy_json_after_filter
