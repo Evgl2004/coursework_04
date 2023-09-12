@@ -63,3 +63,16 @@ def test_json_saver_del_vacancy(call_test_json_saver):
             break
 
     assert result_test == True
+
+
+def test_json_saver_filter_vacancy(call_test_json_saver):
+    vacancy_json = call_test_json_saver.filter_vacancy(['Лицей'])
+
+    result_test = True
+
+    for item in vacancy_json:
+        if 'Лицей' in item['employer']:
+            result_test = False
+            break
+
+    assert result_test == True

@@ -87,9 +87,11 @@ def user_interaction():
             json_saver.write_vacancy(formatted_vacancy)
 
         elif input_data == '2':
-
-            input_keyword_filter = int(input(
-                "Введите ключевые слова для фильтрации вакансий:\n"))
+            # поиск вакансий по указанному списку ключевых слов
+            input_keyword_filter = input(
+                "Введите ключевые слова (через пробел) для фильтрации вакансий:\n").lower().split(' ')
+            json_saver.write_vacancy(vacancy_object_to_dict(
+                sort_by_salary_from(json_saver.filter_vacancy(input_keyword_filter))))
 
         elif input_data == '3':
             # последовательно выполняем следующие действия:
